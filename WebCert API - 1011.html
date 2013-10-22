@@ -1,0 +1,288 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!--
+  Overview.html
+  Web IDL
+
+  Note: This file is generated from Overview.xml.  Run "make" to regenerate it.
+  -->
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Web Certificate API</title>
+
+    <link rel="stylesheet" href="webcrypto.css" type="text/css" />
+    <script src="section-links.js" type="application/ecmascript"></script>
+    <script src="dfn.js" type="application/ecmascript"></script>
+    <!--[if IE]>
+        <style type='text/css'>
+        .ignore {
+        -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+        filter: alpha(opacity=50);
+        }
+        </style>
+        <![endif]-->
+
+    
+  <link rel="stylesheet" href="//www.w3.org/StyleSheets/TR/W3C-ED" type="text/css" />
+  </head>
+
+<body>
+
+<div class="head">
+<div><a href="http://www.w3.org/"><img src="//www.w3.org/Icons/w3c_home" width="72" height="48" alt="W3C" /></a></div>
+
+ <h1>Web Certificate API</h1>
+ <h2>W3C Editor’s Draft <em>11 October 2013</em></h2><dl>
+ 
+ <!--<dt>Latest Editor’s Draft:</dt>
+ <dd><a href="http://dvcs.w3.org/hg/webcrypto-api/raw-file/tip/spec/Overview.html">http://dvcs.w3.org/hg/webcrypto-api/raw-file/tip/spec/Overview.html</a></dd><dt>Latest Published Version:</dt><dd><a href="http://www.w3.org/TR/WebCryptoAPI/">http://www.w3.org/TR/WebCryptoAPI/</a></dd><dt>Previous Version(s):</dt><dd><a href="https://dvcs.w3.org/hg/webcrypto-api/raw-file/0fe9b34c13fb/spec/Overview.html">https://dvcs.w3.org/hg/webcrypto-api/raw-file/0fe9b34c13fb/spec/Overview.html</a></dd><dt>Editor:</dt>
+ -->
+<dd><A href="http://paygate.net/">Mountie Lee</A>, Paygate &lt;mountie@paygate.net&gt;</DD>
+<dd><a href="http://www.etri.re.kr/">Sangrae Cho</a>, ETRI &lt;sangrae@etri.re.kr&gt;</dd>
+<dt>Participate:</dt><dd><p>Send feedback to <a href="mailto:public-webcrypto@w3.org?subject=%5BWebCryptoAPI%5D">public-webcrypto@w3.org</a> (<a href="http://lists.w3.org/Archives/Public/public-webcrypto/">archives</a>), or <a href="https://www.w3.org/Bugs/Public/enter_bug.cgi?product=Web%20Cryptography&amp;component=Web%20Cryptography%20API%20Document">file a bug</a> 
+    (see <a href="https://www.w3.org/Bugs/Public/buglist.cgi?product=Web%20Cryptography&amp;component=Web%20Cryptography%20API%20Document&amp;resolution=---">existing bugs</a>).</p></dd></dl><p class="copyright"><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> &copy; view <a href="http://www.w3.org/"><abbr title="World Wide Web Consortium">W3C</abbr></a><sup>&reg;</sup> (<a href="http://www.csail.mit.edu/"><abbr title="Massachusetts Institute of Technology">MIT</abbr></a>, <a href="http://www.ercim.org/"><abbr title="European Research Consortium for Informatics and Mathematics">ERCIM</abbr></a>, <a href="http://www.keio.ac.jp/">Keio</a>), All Rights Reserved. W3C <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and <a href="http://www.w3.org/Consortium/Legal/copyright-documents">document use</a> rules apply.</p></div><hr />
+
+
+
+    <div class="section">
+      <h2>Abstract</h2>
+      <p>This specification describes a JavaScript API for performing certificate management operations in web applications, such as issuing, updating, and revoking a certificate.</p>
+    </div>
+    
+<div id="toc">
+	<h2>Table of Contents</h2>
+    <div class="toc">
+	<p>the table of contents are defined by Working Group Charter and email comments.</p>
+	<p>definition of WebIDL will be added after getting consensus for table of contents.</p>
+    </div>
+</div>
+
+<div id="sections">
+
+	<div id="introduction" class="section">
+	<h2>1.	Introduction</h2>
+    <p>This specification describes a JavaScript API for performing certificate management operations in web applications, such as issuing, updating, and revoking a certificate. </p>
+	</div>
+
+	</div>
+    
+	<div id="use-cases" class="section">
+	<h2>2.	Use Cases</h2>
+	<p>James want to issue a certificate that will be used for online banking.</p>
+	<p>He visits a physical bank branch and obtains a reference number and authorization code after face to face verification is done by a bank staff. The reference number is used to track certificate enrollment process for multiple days.</p> 
+	<p>He generates a key pair using his user agent at his computer and sends the public key, reference number, authorization code and other parameters to a certificate service provider (www.csp.com). </p> 
+	<p>CSP server signs the public key and user's information with CA's private key to issue a certificate and returns the issued certificate to user agent of James. The issued certificate is stored in the storage of the user agent for later use. </p> 
+	<p>When the issued certificate is going to be expired, he can update his certificate by generating a new key pair for a new certificate. For updating, he does not need to have a reference number and authorization code since he can sign a certificate update message with his private key.</p>    
+	<p>James can revoke his certificate when the related service is no longer needed. The process is similar to certificate update. He signs a certificate revocation message with his private key and send it to CSP server. The return message contains the result of revoking process. CSP server will add the revoked certificate to CRL if the revoking process is successful. </p> 
+	</div>
+
+<section>
+	<h2>3.	Certificate Management</h2>
+	<p>the web certificate api based on the certificate management protocol follows by RFC4210. </p>
+	<p>this specification focus on user agent side of RFC4210 CMP</P>
+    
+    <section class='informative'>
+		<h3>3.1 Overview</h3>
+		<p>Web Certificate API defines the request and response parameters and processed between user agent and CA service providers</p>
+        <p>The following figure illustrates the operational flow of certificate menagement. The UA always requests one of the certificate management operation to a CA server by sending a request message. CA server then processes the request message and sends the result of oepration in a response message back to the UA. The UA handles the response message to retrieve the status and a certificate if necessary and then it optionally sends a confirmation message to CA server to notify the end of an operation. </p>
+        
+  <img src="cert_overview_1011.PNG" width="628" height="376" alt="WebCert operation flow">
+  </section>	
+	
+
+<section>
+			<h3>3.2	KeySpec interface</h3>
+				<p>KeySpec is used to represent public and private key information</p>		 
+          <div class="block">
+		  <div class="blockTitleDiv"><span class="blockTitle">IDL</span></div>
+		  <div class="blockContent">
+		  <pre class="code">
+		  <code class="idl-code">
+Interface KeySpec { 
+	unsigned int keyLength;
+	AlgorithmIdentifier keyAlgorithm;
+	Parameters parameters;
+};
+
+keyLength - public key length in bits.
+keyAlgorithm - public key algorithm identifier.
+parameters - any parameter to operate public key cryptosystem
+
+</code></pre></div></div></div>
+		</section>	
+        
+        <section>
+			<h3>3.3	CertSpec interface</h3>
+				<p>CertSpec is used to represent a certificate</p>		 
+          <div class="block">
+		  <div class="blockTitleDiv"><span class="blockTitle">IDL</span></div>
+		  <div class="blockContent">
+		  <pre class="code">
+		  <code class="idl-code">
+Interface CertSpec { 
+	unsigned int serialNumber;
+    DOMString issuer;
+    DOMString subject;
+    DOMString nickName;
+    DOMString notBefore;
+    DOMString notAfter;
+};
+
+issuer - the relative distinguishied name of the certificate issuer.
+serialNumber - serial number to identify a certificate within the range of issued certificates from a particular certificate issuer.
+
+
+</code></pre></div></div></div>
+		</section>	
+        
+		<section>
+			<h3>3.4	CertContext interface</h3>
+				<p>CertContext is the object that will contain a collection of input parameters for cert management operation.</p>		 
+          <div class="block">
+		  <div class="blockTitleDiv"><span class="blockTitle">IDL</span></div>
+		  <div class="blockContent">
+		  <pre class="code">
+		  <code class="idl-code">
+enum ReqType {
+	<span class="comment">// RFC 4210 Certificate Management Protocol.</span>
+	"cmp",
+	<span class="comment">// PKCS#10 type Certificate signing request.</span>
+	"pkcs10",
+};
+
+Interface CertContext { 
+	ReqType reqType;
+	DOMString refNo;
+	DOMString authCode;
+};
+
+reqType - request message type.
+refNo - reference number to identify a user to request certificate.
+authCode - initial authentication code for origin of message.
+
+</code></pre></div></div></div>
+		</section>	      
+        
+		<section>
+		<h3>3.5.	CertResult interface</h3>
+			<p>CertResult is the object that will contain a return value when the response of cmp is received and processed from a CA Server. This object contains the result of CA operation that is requested by UA.</p>
+			  <div class="block">
+		  <div class="blockTitleDiv"><span class="blockTitle">IDL</span></div>
+		  <div class="blockContent">
+		  <pre class="code">
+		  <code class="idl-code">	
+Interface CertResult { 
+	readonly attribute DOMString status;
+	readonly attribute CertSpec cert:
+};
+
+status - this indicates the result of CA operation requested by UA.
+cert - a certificate that is issued or updated by CA server
+</code></pre></div></div>
+</section>	
+
+	<section>
+		<h3>3.6.	Cert interface</h3>
+		<p>Cert is the object that requests certificate operation to CA server and handles a response message from the server.</p>	 
+          <div class="block">
+		  <div class="blockTitleDiv"><span class="blockTitle">IDL</span></div>
+		  <div class="blockContent">
+		  <pre class="code">
+		  <code class="idl-code">
+Interface <dfn>Cert</dfn> {
+	DOMString genCertIssue (CertContext context, KeySpec key, optional DOMString keyPass);
+	DOMString genCertUpdate (CertContext context, CertSpec cert, optional DOMString keyPass, KeySpec newKey, optional DOMString newKeyPass);
+	DOMString genCertRevoke (CertContext context, DOMString reason, CertSpec cert, optional DOMString keyPass);
+	CertResult handleResp (DOMString respMessage);
+	DOMString genCertConfirm (CertSpec cert, optional DOMString keyPass);
+}
+
+	</code></pre></div></div></div>
+	</section>
+
+<section>
+		<h4>3.6.1.	Methods and Parameters</h4>
+		<section class='informative'>
+		<h5>3.6.1.1	The genCertIssue method</h5>
+		<p>this method allows UA to generate certificate request message to CA. A keypair should be generated inside the method. The return value is base64 encoded ASN.1 message. </p>
+
+<p>Input parameters: </p>
+<ul>
+<li>context - the context information to request for issuing a certificate</li>
+<li>key - keyAlgorithm, keyLength, keyParameter, priKey, pubKey
+"	priKey and pubKey should be null if key is generated in genCertReq</li>
+<li>keyPass - the passphrase to encrypt a private key if necessary</li>
+</ul>
+<p>Return value:</p>
+<ul>
+  <li>DOMString - this can be base64 encoded ASN.1 message for certificate issuance.</li></ul>
+	</section>	<!-- end of requestCert -->
+    
+	<section>
+		<h5>3.6.1.2	The genCertUpdate method</h5>
+		<p>this method allows UA to renew a certificate to CA. A keypair should be generated inside the method. The return value is base64 encoded ASN.1 message.</p>
+        
+<p>Input parameters: </p>
+<ul>
+<li>context - the context information to request for updating a certificate</li>
+<li>cert - the certificate that will be updated</li>
+<li>keyPass - the passphrase to decrypt a private key if necessary</li>
+<li>newKey - key spec for a new key pair to update a certificate</li>
+<li>newKeyPass - the passphrase to encrypt a new private key if necessary</li>
+</ul>
+
+		<p>Return value:</p>
+		<ul><li>DOMString - this can be base64 encoded ASN.1 message for certificate update.</li></ul>
+	</section>	<!-- end of updateCert -->
+    
+	<section>
+		<h5>3.6.1.3	The genCertRevoke method</h5>
+		<p>this method allows UA to revoke a certificate to CA. This method returns base64 encoded ASN.1 message for certificate revocation.</p>
+
+		<p>Input parameters: </p>
+		<ul>
+        <li>context - the context information to request for revoking a certificate</li>
+		<li>reason - the reason to revoke a certificate</li>
+		<li>cert - the certificate that will be revoked</li>
+		<li>keyPass - the passphrase to decrypt a private key if necessary</li>
+        </ul>
+
+
+		<p>Return value:</p>
+		<ul><li>DOMString - this can be base64 encoded ASN.1 message for certificate revocation.</li></ul>
+		</section><!-- end of revokeCert -->
+	
+    <section>
+		<h5>3.6.1.4	The handleResp method</h5>
+		<p>This method handles a response message sent from CA Server.</p>
+        <p>Input parameters: </p>
+			<ul><li>DOMString - this can be base64 encoded ASN.1 response message sent from CA server.</li></ul>
+
+<p>Return value:</p>
+<ul>
+  <li>CertResult - this is the result of cert oepration carried out in CA server.</li></ul>
+	</section>	<!-- end of handleResp -->
+    
+	<section>
+		<h5>3.6.1.5	The genCertConfirm method</h5>
+		<p>This method generates confirmation message required in CMP protocol sending to CA server that confirms certificate operation is successfully finished.</p>
+        <p>Input parameters: </p>
+        <ul>
+		<li>msgID - message identifier that this message confirms</li>
+		<li>cert - the certificate that will be used to retrieve a private key</li>
+		<li>keyPass - the passphrase to decrypt a private key if necessary</li>
+		</ul>
+        
+		<p>Return value:</p>
+		<ul><li>DOMString - this can be base64 encoded ASN.1 message for certificate confirmation.</li></ul>
+	</section>	<!-- end of handleResp -->
+</section> <!-- end of methods and parameters -->
+	
+	</section> <!-- end of Cert interface -->
+</section> <!-- end of Certificate Lifecycle Control -->
+
+</body>
+</html>
+
